@@ -1,23 +1,29 @@
-import React from "react";
-
-const handleForm = (e) => {
-  e.preventDefault();
-  console.log(e.target.email.value);
-  console.log(e.target.password.value);
-
-  if (e.target.email.value === "" || e.target.password.value === "") {
-    alert("Please fill in all the fields");
-    return;
-  }
-
-  alert("Form submitted successfully");
-
-  //clear the values
-  e.target.email.value = "";
-  e.target.password.value = "";
-};
+import React, { useTransition } from "react";
 
 const App = () => {
+  const [pending, startTransition] = useTransition();
+
+  const handleForm = (e) => {
+    e.preventDefault();
+    console.log(e.target.email.value);
+    console.log(e.target.password.value);
+
+    if (e.target.email.value === "" || e.target.password.value === "") {
+      alert("Please fill in all the fields");
+      return;
+    }
+
+    startTransition(async () => {
+      await new Promise((res) => {
+        setTimeout(res, 2000); // Simulate a slow network request
+      });
+    });
+
+    //clear the values
+    e.target.email.value = "";
+    e.target.password.value = "";
+  };
+
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-center px-4 py-10 lg:px-6">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -63,8 +69,9 @@ const App = () => {
             />
           </div>
           <button
+            disabled={pending}
             type="submit"
-            className="bg-blue-500 text-white cursor-pointer w-full rounded-tremor-default bg-tremor-brand py-2.5 text-center text-sm font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis "
+            className="bg-blue-500 text-white cursor-pointer w-full rounded-tremor-default bg-tremor-brand py-2.5 text-center text-sm font-medium text-tremor-brand-inverted shadow-tremor-input hover:bg-tremor-brand-emphasis disabled:bg-blue-400 "
           >
             Sign in
           </button>
